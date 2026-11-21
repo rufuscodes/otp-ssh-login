@@ -1,13 +1,12 @@
-# otp-login
+# otp-ssh-login
 
-Add two-factor authentication (TOTP) to SSH **and** GNOME (GDM) login on
-Ubuntu / Debian.
+Add two-factor authentication (TOTP) to SSH on Ubuntu / Debian.
 
 Require a 6-digit code from an authenticator app (Google Authenticator, Authy,
-1Password, Aegis, etc.) in addition to your normal credentials. SSH and GNOME
-share one secret, so a single app entry unlocks both.
+1Password, Aegis, etc.) in addition to your normal credentials on every SSH
+login.
 
-Tested on **Ubuntu 26.04 LTS / OpenSSH 9.x / GDM3**.
+Tested on **Ubuntu 26.04 LTS / OpenSSH 9.x**.
 
 ## What's included
 
@@ -16,8 +15,6 @@ Tested on **Ubuntu 26.04 LTS / OpenSSH 9.x / GDM3**.
 | [`setup-ssh-otp.sh`](setup-ssh-otp.sh) | Install OpenSSH + Google Authenticator PAM, generate your TOTP secret, configure PAM + sshd |
 | [`harden-ssh.sh`](harden-ssh.sh) | SSH hardening + fail2ban (run after the OTP script) |
 | [`ssh-otp.md`](ssh-otp.md) | Full step-by-step tutorial, manual commands, and troubleshooting |
-| [`setup-gnome-otp.sh`](setup-gnome-otp.sh) | Add the same TOTP factor to the GNOME (GDM) login screen |
-| [`gnome-otp.md`](gnome-otp.md) | GNOME OTP tutorial, manual commands, and troubleshooting |
 
 ## Requirements
 
@@ -27,11 +24,10 @@ Tested on **Ubuntu 26.04 LTS / OpenSSH 9.x / GDM3**.
 ## Quick start
 
 ```bash
-chmod +x setup-ssh-otp.sh harden-ssh.sh setup-gnome-otp.sh
+chmod +x setup-ssh-otp.sh harden-ssh.sh
 
 ./setup-ssh-otp.sh pass+otp   # scan the QR code when it appears
 ./harden-ssh.sh               # optional: hardening + fail2ban
-./setup-gnome-otp.sh          # add the same factor to the GNOME login screen
 ```
 
 > ⚠️ **Do not close your current SSH session until you've verified login in a
@@ -89,20 +85,6 @@ A working setup shows:
 kbdinteractiveauthentication yes
 authenticationmethods keyboard-interactive
 ```
-
-## GNOME login OTP
-
-After SSH OTP is working, add the same factor to the GDM login screen:
-
-```bash
-./setup-gnome-otp.sh          # every user must have a secret
-./setup-gnome-otp.sh nullok   # only users WITH a secret are prompted
-```
-
-The script **reuses** your existing `~/.google_authenticator` (it will not
-overwrite the secret SSH depends on). At the login screen you'll then be asked
-for your password followed by the 6-digit code. See
-[`gnome-otp.md`](gnome-otp.md) for the manual steps and troubleshooting.
 
 ## Locked out? Recover from the console
 
